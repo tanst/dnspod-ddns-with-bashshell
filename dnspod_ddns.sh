@@ -44,8 +44,9 @@ record_line_id=$(echo ${Record#*line_id}|cut -d'"' -f3)
 echo Start DDNS update...
 ddns="$(curl $(if [ -n "$OUT" ]; then echo "--interface $OUT"; fi) -s -X POST https://dnsapi.cn/Record.Ddns -d "${token}&record_id=${record_id}&record_line_id=${record_line_id}" -H "${UA}")"
 ddns_result="$(echo ${ddns#*message\"}|cut -d'"' -f2)"
-echo -n "DDNS upadte result:$ddns_result "
-echo $ddns|grep -Eo "$IPREX"|tail -n1
+final_IP=$(echo $ddns|grep -Eo "$IPREX"|tail -n1)
+curl -k https://www.example.com/mail.php -X POST -d "event=ip($final_IP) changed&name=$host.$domain&email=$Email"
+echo "DDNS upadte result:$ddns_result $final_IP"
 else echo -n Get $host.$domain error :
 echo $(echo ${Record#*message\"})|cut -d'"' -f2
 fi
