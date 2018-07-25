@@ -1,3 +1,20 @@
+## 1、下载脚本
+```
+curl -k -s https://raw.githubusercontent.com/tanst/dnspod-ddns-with-bashshell/master/dnspod_ddns.sh >dnspod_ddns.sh
+chmod +x dnspod_ddns.sh
+```
+
+下载后修改参数。
+
+## 2、添加cron任务
+
+```
+*/5 * * * * /root/dnspod_ddns.sh &> /dev/null
+```
+
+每5分钟检测一次。
+
+---
 # Dnspod-DDNS-with-BashShell
 利用Dnspod的API和shell脚本搭建自己的动态域名服务。如果你使用这个脚本，建议点watch以获取更新通知。  
 应friends要求写的，~~dnspod的限制比较多，对调用次数比较小气，频次高了（API文档说的是一小时5次）就会冻结API一小时，返回API usage is limited的报错，所以本脚本进行多次对比确保减少API调用~~（按照本脚本的逻辑理论上和实测正常使用不可能超过限制，请放心使用！）  
