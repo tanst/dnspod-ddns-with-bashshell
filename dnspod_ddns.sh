@@ -7,7 +7,7 @@ API_Token=abcdefghijklmnopq2333333
 domain=example.com
 host=home
 Email=yourmail@example.com
-CHECKURL="http://ip.qq.com"
+CHECKURL="http://icanhazip.com/"
 #OUT="pppoe"
 #CONF END
 
@@ -29,7 +29,7 @@ exit
 fi
 fi
 token="login_token=${API_ID},${API_Token}&format=json&lang=en&error_on_empty=yes&domain=${domain}&sub_domain=${host}"
-UA="User-Agent: 03K DDNS Client/1.0.0 ($Email)"
+UA="User-Agent: tanst DDNS Client/1.0.0 ($Email)"
 Record="$(curl $(if [ -n "$OUT" ]; then echo "--interface $OUT"; fi) -s -X POST https://dnsapi.cn/Record.List -d "${token}" -H "${UA}")"
 iferr="$(echo ${Record#*code}|cut -d'"' -f3)"
 if [ "$iferr" == "1" ];then
@@ -39,13 +39,13 @@ if [ "$record_ip" == "$URLIP" ];then
 echo "IP SAME IN API,SKIP UPDATE."
 exit
 fi
-record_id=$(echo ${Record#*records}|cut -d'"' -f5)
+record_id=$(echo ${Record#*records}|cut -d'"' -f9)
 record_line_id=$(echo ${Record#*line_id}|cut -d'"' -f3)
 echo Start DDNS update...
 ddns="$(curl $(if [ -n "$OUT" ]; then echo "--interface $OUT"; fi) -s -X POST https://dnsapi.cn/Record.Ddns -d "${token}&record_id=${record_id}&record_line_id=${record_line_id}" -H "${UA}")"
 ddns_result="$(echo ${ddns#*message\"}|cut -d'"' -f2)"
 final_IP=$(echo $ddns|grep -Eo "$IPREX"|tail -n1)
-curl -k https://www.example.com/mail.php -X POST -d "event=ip($final_IP) changed&name=$host.$domain&email=$Email"
+#curl -k https://www.xdty.org/mail/mail.php -X POST -d "event=ip($final_IP) changed&name=$host.$domain&email=$Email"
 echo "DDNS upadte result:$ddns_result $final_IP"
 else echo -n Get $host.$domain error :
 echo $(echo ${Record#*message\"})|cut -d'"' -f2
